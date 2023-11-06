@@ -178,40 +178,7 @@ public class EncryptionDecryptionAESService {
                  System.err.println("Encryption failed.");
              }
              return encryptedString;
-             /*
-             byte[] messageInBytes = plainMessage.getBytes();
-              //Cipher encryptionCipher = Cipher.getInstance("AES/GCM/Nopadding");
-             secretKeyEntity = secretKeyRepository.findBysecretKeyName(secretKeyName);
-             System.out.println("secretkey :"+secretKeyEntity.getSecretKeyValue());
-              Cipher encryptionCipher = getMutualCipher();
-              encryptionCipher.init(Cipher.ENCRYPT_MODE, secretKeyEntity.getSecretKeyValue());
-              byte[] encryptedmessage = encryptionCipher.doFinal(messageInBytes);
-              String encodedMessage = encode(encryptedmessage);
-              return encodedMessage;
-             //Get the SecretKey from the DB
-
-            /** secretKeyEntity = secretKeyRepository.findBysecretKeyName(secretKeyName);
-             // System.out.println(secretKeyEntity.getSecretKeyValue());
-             ////
-             SecureRandom secureRandom = new SecureRandom();
-             byte[] iv = new byte[16];
-             secureRandom.nextBytes(iv);
-             IvParameterSpec ivspec = new IvParameterSpec(iv);
-
-             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-             //KeySpec spec = new PBEKeySpec(secretKeyMap.get(secretKeyName).toString().toCharArray(), salt.getBytes(), ITERATION_COUNT, KEY_SIZE);
-             KeySpec spec = new PBEKeySpec(secretKeyEntity.getSecretKeyValue().toString().toCharArray(), salt.getBytes(), ITERATION_COUNT, KEY_SIZE);
-             SecretKey tmp = factory.generateSecret(spec);
-             SecretKeySpec secretKeySpec = new SecretKeySpec(tmp.getEncoded(), "AES");
-
-             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-             cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivspec);
-
-             byte[] cipherText = cipher.doFinal(plainMessage.getBytes("UTF-8"));
-             byte[] encryptedData = new byte[iv.length + cipherText.length];
-             System.arraycopy(iv, 0, encryptedData, 0, iv.length);
-             System.arraycopy(cipherText, 0, encryptedData, iv.length, cipherText.length);
-             return encode(encryptedData);**/
+            
          }  catch (Exception e) {
              throw new RuntimeException(e);
          }
@@ -225,38 +192,17 @@ public class EncryptionDecryptionAESService {
         String queryString = "/authorizeUser/validateUserAndToken?userId="+userId+"&AppName="+appName+"&ApiKey="+api_key;
         // authservicebaseurl = authServiceBaseUrl + queryString;
 
-        System.out.println(authServiceBaseUrl + queryString);
+        //System.out.println(authServiceBaseUrl + queryString);
         String response = webClient.get()
                 .uri(authServiceBaseUrl + queryString)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-        System.out.println(response);
-        System.out.println(response.substring(1,4));
+        //System.out.println(response);
+        //System.out.println(response.substring(1,4));
         if(response.substring(1,4).equals("200")) {
             try {
-                /**byte[] encryptedData = decode(encrytedMessage);
-                byte[] iv = new byte[16];
-                System.arraycopy(encryptedData, 0, iv, 0, iv.length);
-                IvParameterSpec ivspec = new IvParameterSpec(iv);
-                //Get the SecretKey from the DB
-                // SecretKeyEntity secretKeyEntity = new SecretKeyEntity();
-                secretKeyEntity = secretKeyRepository.findBysecretKeyName(secretKeyName);
-                //System.out.println(secretKeyEntity.getSecretKeyValue());
-                ////
-                SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-                KeySpec spec = new PBEKeySpec(secretKeyEntity.getSecretKeyValue().toString().toCharArray(), salt.getBytes(), ITERATION_COUNT, KEY_SIZE);
-                SecretKey tmp = factory.generateSecret(spec);
-                SecretKeySpec secretKeySpec = new SecretKeySpec(tmp.getEncoded(), "AES");
-
-                Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-                cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivspec);
-
-                byte[] cipherText = new byte[encryptedData.length - 16];
-                System.arraycopy(encryptedData, 16, cipherText, 0, cipherText.length);
-
-                byte[] decryptedText = cipher.doFinal(cipherText);
-                return new String(decryptedText, "UTF-8");**/
+               
                 secretKeyEntity = secretKeyRepository.findBysecretKeyName(secretKeyName);
                 System.out.println("secretkey :"+secretKeyEntity.getSecretKeyValue());
                 String decryptedString = decrypt(encrytedMessage, secretKeyEntity.getSecretKeyValue(), salt);
@@ -266,14 +212,7 @@ public class EncryptionDecryptionAESService {
                     System.err.println("Decryption failed.");
                 }
                 return decryptedString;
-                /*
-                 byte[] messageInBytes = decode(encrytedMessage);
-                Cipher decryptionCipher = getMutualCipher();
-                 GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(T_LEN,decryptionCipher.getIV());
-
-                 decryptionCipher.init(Cipher.DECRYPT_MODE,secretKeyEntity.getSecretKeyValue());
-                 byte[] decryptedmessage = decryptionCipher.doFinal(messageInBytes);
-                 return new String(decryptedmessage, "UTF-8");*/
+               
 
             } catch (RuntimeException ex) {
                 ex.printStackTrace();
